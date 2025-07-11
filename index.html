@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QVIZO - MIXÉR OTÁZOK</title>
+
+<style>
+body
+
+{
+font-family: 'Arial', sans-serif; /* písmo všetky okná */
+font-size: 18px; /* predúvod a úvod */
+text-align: center; /* všetky okná */
+background-color:  #F5F5DC; /* pozadie všetky okná */
+} 
+
+.question-container, .start-container, .end-container
+
+{
+margin: 20px auto; /* posun okna predúvod */
+max-width: 600px;        
+height: 90vh; /* maximálna výška na výšku obrazovky */           
+overflow-y: auto; /* pridá posuvník ak obsah presahuje */                      
+padding: 20px; /* posun textu v rámiku predúvod */
+border: 5px solid #333; /* orámovanie predúvod */
+border-radius: 50px; /* rádius predúvod a v otázkach */           
+background-color: #F5F5DC; /* farba pozadia v rámikoch predúvod a v otázkach */
+}
+
+
+/* úvodné okno */
+
+.menu
+{
+background-color: #F5F5DC;
+padding: 10px;
+border-radius: 50px;
+border: 5px solid #333;
+margin: 0 auto;
+max-width: 600px; /* maximálna šírka na obrazovku */         
+height: 100vh;  
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+overflow-y: auto;
+}
+ 
+
+/* text otázky */
+
+.question
+{
+font-size: 32px;
+font-weight: bold;
+color: #333;
+margin-bottom: 10px;  
+border: 3px solid #333; /* orámovanie otázky */
+border-radius: 10px; /* zaoblené rohy */
+background-color: #f0f0f0; /* svetlejšia farba pozadia */
+padding: 15px; /* odsadenie textu od okraja */
+}
+
+
+/* text odpovedí */
+
+.answers button
+{
+display: block;
+width: 100%;
+margin: 5px 0;
+padding: 12px;
+font-size: 28px;
+font-weight: bold;
+border: none;
+border-radius: 12px;
+cursor: pointer;
+background-color: #ddd;
+color: black;
+}
+
+/* PREVERIT! */
+
+.answers button:hover
+{
+background-color: white;
+}
+
+
+/* body */
+.score
+{
+font-size: 20px;
+margin-top: 20px;
+color: #444;
+}
+
+
+/* počítadlo otázok */
+
+.question-counter
+{
+font-size: 28px;
+margin-top: 10px;
+color: #777;
+}
+ 
+
+/* tlačítka 10 25 50 100 a Späť na začiatok */
+
+.menu button, .back-button
+{
+margin: 10px;
+padding: 12px;
+font-size: 28px;
+font-weight: bold;
+border-radius: 10px;
+border: 2px solid #333;
+cursor: pointer;
+background-color: #800080;
+color: white;
+}
+
+ 
+
+/* Štýly pre názov QVIZO */
+
+.qvizo-title {
+font-family: 'Broadway', sans-serif; /* Zmeň na požadovaný font */
+font-size: 70px; /* Zmeň veľkosť písma */
+color: red; /* Zmeň farbu textu */
+text-align: center; /* Ak chceš text centrovať */
+font-weight: bold; /* Ak chceš, aby bol text tučný */
+}
+      
+
+/* políčko Zadaj číslo otázky */
+
+#questionNumber
+
+{
+font-size: 30px; /* veľkosť písma */
+color: black; /* farba písma */
+background-color: #F5F5DC /*béžová*/; /* pozadie políčka */
+padding: 10px; /* odsadenie textu od okrajov políčka */
+border-radius: 10px; /* zaoblené rohy */
+border: 2px solid #800080 /*fialová*/; /* orámovanie políčka */
+width: 200px; /* šírka políčka */
+text-align: center; /* centrovanie textu */
+}
+
+
+/* podtieň keď kliknem na tlačítka 10 25 50 100*/
+
+.menu button:hover, .back-button:hover
+{
+background-color:  #B57EDC /*levandulová*/;
+}
+
+     
+/* Pridanie štýlu pre tlačidlo "Začať hru" */         
+
+.start-container button
+{
+font-family: 'Arial', sans-serif; /* Nastavenie písma */
+font-size: 24px; /* Nastavenie veľkosti písma */
+padding: 15px 30px; /* Vylepšenie vzhľadu tlačidla */
+border: none;
+background-color: #800080;
+color: white;
+border-radius: 10px;
+cursor: pointer;
+}
+
+/* Pridaj tento kód pre zarovnanie tlačidiel v dvoch radoch */
+
+.button-row 
+{
+display: flex;
+justify-content: center;
+margin-bottom: 55px; /* medzi radmi */
+}
+
+.button-row button 
+{
+margin: 0 15px; /* medzera medzi tlačidlami */
+}
+
+.menu button 
+{
+margin: 10px;
+padding: 12px;
+font-size: 28px;
+font-weight: bold;
+border-radius: 10px;
+border: 2px solid #333;
+cursor: pointer;
+background-color: #800080;
+color: white;
+}
+
+.menu button:hover 
+{
+background-color: #B57EDC;
+} 
+
+
+/* Hlásenie správna a nesprávna odpoveď*/
+
+.feedback
+{
+font-size: 28px;
+color: black;
+font-weight: bold;
+}
+
+/* text správnej odpovede*/
+
+.correct-answer
+{
+font-size: 28px;
+color: green;
+font-weight: bold;
+}
+
+.qvizo-title 
+{
+font-family: 'Broadway', sans-serif;
+font-size: 70px;
+color: black; /* čierna ako predvolená */
+text-align: center;
+font-weight: bold;
+}
+
+
+.qvizo-title .q-letter 
+{
+color: red; /* červené Q */
+} 
+
+.small-title 
+{
+font-size: 25px; /* menšia veľkosť písma v otázkach */
+margin-bottom: 10px; /* trošku priestoru pod logom */
+}
+
+.intro-title-box 
+{
+border: 5px solid #333; /* orámovanie rámčeka */
+border-radius: 30px; /* zaoblené rohy */
+padding: 30px 60px; /* vnútorné odsadenie */
+background-color: #fff; /* pozadie rámčeka */
+box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* mierny tieň pre efekt */
+}
+
+
+/* pozadie tlačítka Späť na začiatok*/
+
+.back-button 
+{
+background-color: #800080;
+}
+
+
+/* podtieň keď kliknem na tlačítka Späť na začiatok*/
+
+.back-button:hover
+{
+background-color: #B57EDC;
+}
+
+
+.start-container, .end-container
+{
+display: none;
+}
+
+
+.end-container
+{
+text-align: center;
+}
+ 
+
+</style>
+</head>
+<body>
+
+
+<!-- Úvodné logo okno QVIZO -->
+
+<div class="intro-screen"> 
+<div id="intro-screen" onclick="showStart()" style="height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #F5F5DC; cursor: pointer;">
+<div class="intro-title-box">
+<h1 class="qvizo-title"><span class="q-letter">Q</span>VIZO</h2>
+</div> 
+</div> 
+
+
+<!-- Pred úvodným oknom -->
+
+<div class="start-container">  
+<h1 class="qvizo-title"><span class="q-letter">Q</span>VIZO</h1>
+<h2>MIXÉR OTÁZOK</h2>
+<p>Posledná aktualizácia 31.3.2025</p>
+<button onclick="showMenu()">Začať hru</button>
+</div>
+
+
+<!-- Menu na výber počtu otázok a zadanie čísla -->
+
+<div class="menu" style="display: none;">
+<h1 class="qvizo-title"><span class="q-letter">Q</span>VIZO</h1>
+<p>Vyber si počet otázok alebo zadaj číslo otázky:</p>
+
+<div class="button-row">
+<button onclick="startGame(10)">10 otázok</button>
+<button onclick="startGame(25)">25 otázok</button>
+</div>
+
+<div class="button-row">
+<button onclick="startGame(50)">50 otázok</button>
+<button onclick="startGame(100)">100 otázok</button>
+</div>
+
+<br><br>
+
+<input type="number" id="questionNumber" placeholder="Číslo otázky" min="1" max="100">
+<button onclick="startGameFromNumber()">Štart od čísla...</button>
+<p id="total-questions">Počet otázok v hre: 0</p>
+</div> 
+ 
+
+
+<!-- Hlavné okno na otázky -->
+
+<div class="question-container" style="display: none;">
+<h1 class="qvizo-title small-title"><span class="q-letter">Q</span>VIZO</h1>
+<div class="question-counter" id="counter"></div>
+<div class="question" id="question"></div>
+<div class="answers">
+
+<button onclick="checkAnswer(0)" id="btn0"></button>
+<button onclick="checkAnswer(1)" id="btn1"></button>
+<button onclick="checkAnswer(2)" id="btn2"></button>
+<button onclick="checkAnswer(3)" id="btn3"></button> <!-- nový štvrtý button -->
+
+</div>
+
+<p class="score">Body: <span id="score">0</span></p>
+
+<p id="feedback" class="feedback"></p>
+<p id="correct-answer" class="correct-answer"></p>
+
+<button class="back-button" onclick="backToMenu()">Späť na začiatok</button>
+
+</div>
+  
+
+<!-- Záverečné okno -->
+
+<div class="end-container">
+<h1 class="qvizo-title"><span class="q-letter">Q</span>VIZO</h1>
+<h2 style="font-size: 36px; font-family: 'Arial', sans-serif; color: #4CAF50;">Koniec hry</h2>
+
+<p style="font-size: 28px; font-family: 'Arial', sans-serif; color: #333;">Vaše skóre je: <span id="final-score" style="font-size: 30px; color: #FF5722;"></span></p>
+
+<button onclick="backToStart()" style="font-size: 20px; font-family: 'Arial', sans-serif; background-color: #800080; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">Späť na začiatok</button>
+
+</div>
+
+<script>
+
+
+let questions = [];
+
+fetch("otazky.json")
+  .then(response => response.json())
+  .then(data => {
+    questions = data;
+    document.getElementById("total-questions").innerText = `Počet otázok v databáze: ${questions.length}`;
+  })
+  .catch(error => {
+    console.error("Chyba pri načítaní otázok:", error);
+    alert("Nepodarilo sa načítať otázky.");
+  });
+
+let selectedQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let delayTime = 0000; // Čas oneskorenia (2 sekundy) /*najskôr otázka a potom odpovede*/
+
+ 
+
+
+function shuffle(array)
+{
+for (let i = array.length - 1; i > 0; i--)
+{
+let j = Math.floor(Math.random() * (i + 1));
+[array[i], array[j]] = [array[j], array[i]];
+}
+}
+
+function showMenu() {
+document.querySelector(".start-container").style.display = "none";
+document.querySelector(".menu").style.display = "block";
+}
+
+
+function startGame(numQuestions) {
+shuffle(questions);
+selectedQuestions = questions.slice(0, numQuestions);
+currentQuestionIndex = 0;
+score = 0;
+document.getElementById("score").innerText = score;
+
+        
+
+// Zobrazenie počtu otázok ihneď po prejdení do menu
+
+document.getElementById("total-questions").innerText = `Počet otázok v hre: ${selectedQuestions.length}`;
+document.querySelector(".menu").style.display = "none";
+document.querySelector(".question-container").style.display = "block";
+showQuestion();
+
+}
+
+function showStart() {
+document.getElementById("intro-screen").style.display = "none";
+document.querySelector(".start-container").style.display = "block";
+} 
+
+      
+
+function startGameFromNumber() {
+let number = document.getElementById("questionNumber").value;
+number = parseInt(number, 10);
+if (number >= 1 && number <= questions.length)
+
+{
+
+selectedQuestions = questions.slice(number - 1); // Zoberieme otázky od zadaného čísla
+currentQuestionIndex = 0;
+score = 0;
+document.getElementById("score").innerText = score;
+document.querySelector(".menu").style.display = "none";
+document.querySelector(".question-container").style.display = "block";
+showQuestion();
+
+} else {
+
+alert("Zadané číslo je mimo rozsah otázok.");
+
+}
+}
+
+
+function showQuestion() {
+let q = selectedQuestions[currentQuestionIndex];
+let shuffledAnswers = [...q.answers];
+shuffle(shuffledAnswers);
+
+ 
+
+let newCorrectIndex = shuffledAnswers.indexOf(q.answers[q.correct]);
+selectedQuestions[currentQuestionIndex].shuffledCorrect = newCorrectIndex;
+document.getElementById("question").innerText = q.question;
+document.getElementById("counter").innerText = `Otázka ${currentQuestionIndex + 1} / ${selectedQuestions.length}`;
+document.getElementById("feedback").innerText = "";
+document.getElementById("correct-answer").innerText = "";
+document.querySelectorAll(".answers button").forEach((btn) => {
+btn.style.display = "none"; // Skryjeme odpovede
+
+});
+
+// Zobrazíme odpovede po 2 sekundách
+
+setTimeout(() => {
+document.querySelectorAll(".answers button").forEach((btn, i) => {
+btn.innerText = shuffledAnswers[i];
+btn.style.backgroundColor = "#ddd";
+btn.style.color = "black";
+btn.style.display = "block";
+btn.disabled = false;
+
+});
+
+}, delayTime);
+
+}
+
+let answerClicked = false; // Tento flag kontroluje, či bola už odpoveď kliknutá
+
+ 
+
+function checkAnswer(index) {
+if (answerClicked) return;  // Ak už bola odpoveď kliknutá, nič sa neudeje
+answerClicked = true; // Nastavíme, že odpoveď bola kliknutá
+let correct = selectedQuestions[currentQuestionIndex].shuffledCorrect;
+if (index === correct) {
+document.querySelectorAll(".answers button")[index].style.backgroundColor = "green";
+
+
+
+// Pripočítame body za správnu odpoveď
+
+score += 10;
+
+
+} else {
+
+document.querySelectorAll(".answers button")[index].style.backgroundColor = "red"; document.getElementById("feedback").innerText = "Nesprávna odpoveď!";               document.getElementById("correct-answer").innerText = "Správna odpoveď: " + document.querySelectorAll(".answers button")[correct].innerText;
+
+// Odpočítame body za nesprávnu odpoveď
+
+score -= 10;
+
+}
+
+document.getElementById("score").innerText = score;
+setTimeout(() => {
+if (currentQuestionIndex < selectedQuestions.length - 1) {
+currentQuestionIndex++;
+showQuestion();
+
+} else {
+
+endGame();
+
+}
+
+// Po zobrazení ďalšej otázky resetujeme flag
+
+answerClicked = false;
+}, 2500); /*čas výsledku odpovedy*/
+
+}
+
+function endGame() {
+
+document.querySelector(".question-container").style.display = "none";
+document.querySelector(".end-container").style.display = "block";           
+document.getElementById("final-score").innerText = score;
+
+}
+
+ 
+function backToMenu() {
+
+document.querySelector(".menu").style.display = "none";
+document.querySelector(".question-container").style.display = "none";
+document.querySelector(".start-container").style.display = "block";
+
+
+// Zobrazenie celkového počtu otázok pri návrate na menu
+
+document.getElementById("total-questions").innerText = `Počet všetkých otázok v databáze: ${questions.length}`;
+
+}
+
+ 
+function backToStart() {
+
+document.querySelector(".start-container").style.display = "block";
+document.querySelector(".end-container").style.display = "none";
+
+}
+ 
+
+
+// Na začiatok zobrazíme úvodné okno
+
+window.onload = function() {
+document.querySelector(".start-container").style.display = "none";
+document.getElementById("total-questions").innerText = `Počet otázok v databáze: ${questions.length}`;   
+
+}
+
+</script>
+</body>
+</html>
